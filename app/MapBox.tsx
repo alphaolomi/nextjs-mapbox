@@ -4,7 +4,7 @@ import Map, {
   Marker,
   Popup,
   FullscreenControl,
-  AttributionControl,
+
 } from "react-map-gl";
 
 // TODO: Fix this type
@@ -15,16 +15,19 @@ interface MapBoxProps {
   mapStyle?: string;
 }
 
-// "pk.eyJ1IjoiYWxwaGFvbG9taSIsImEiOiJjbGloZXNoYzUxZXZ0M2VxZnRibjFrbGl0In0.n3aeO42LZlR5Wu1fjht7vA";
 
 // TODO: Fix these props
 export default function MapBox({}: MapBoxProps) {
   const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
   const [showPopup, setShowPopup] = React.useState(true);
-  if (!MAPBOX_TOKEN) {
+  if (!MAPBOX_TOKEN && process.env.NODE_ENV !== "production") {
     throw new Error(
       "Mapbox token is not set, please set it in your `.env` file"
     );
+  }
+
+  if (!MAPBOX_TOKEN) {
+    return null;
   }
 
   return (
@@ -50,7 +53,8 @@ export default function MapBox({}: MapBoxProps) {
 
       {showPopup && (
         <Popup
-          latitude={-6.7924} longitude={39.2083}
+          latitude={-6.7924}
+          longitude={39.2083}
           anchor="bottom"
           onClose={() => setShowPopup(false)}
         >
@@ -61,12 +65,6 @@ export default function MapBox({}: MapBoxProps) {
         position="top-right" //  'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
         style={{}}
       />
-
-      {/* <AttributionControl
-        customAttribution="Map design by me"
-        position="bottom-right"
-        style={{}}
-      /> */}
     </Map>
   );
 }
